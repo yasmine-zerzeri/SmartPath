@@ -1,0 +1,453 @@
+{% extends 'public/base.html.twig' %}
+
+{% block title %}SmartPath - Cours{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .page-header {
+        background: rgba(10, 22, 40, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 20px;
+        padding: 3rem 2rem;
+        box-shadow: 0 8px 32px rgba(37, 99, 235, 0.3);
+        margin-bottom: 3rem;
+        text-align: center;
+        animation: fadeInUp 0.6s ease-out;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s ease;
+    }
+    
+    body.light-mode .page-header {
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid rgba(3, 105, 161, 0.3);
+        box-shadow: 0 4px 25px rgba(14, 165, 233, 0.2);
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(96, 165, 250, 0.1), transparent);
+        animation: shine 3s infinite;
+    }
+    
+    @keyframes shine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    
+    .page-header h2 {
+        color: #e0f2fe;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 30px rgba(96, 165, 250, 0.5));
+        transition: all 0.5s ease;
+    }
+    
+    body.light-mode .page-header h2 {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 15px rgba(14, 165, 233, 0.3));
+    }
+    
+    .page-header p {
+        color: #bfdbfe;
+        font-size: 1.1rem;
+        position: relative;
+        z-index: 1;
+        transition: color 0.5s ease;
+    }
+    
+    body.light-mode .page-header p {
+        color: #0c4a6e;
+        font-weight: 500;
+    }
+    
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+        padding-bottom: 4rem;
+    }
+    
+    .course-card {
+        background: rgba(10, 22, 40, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(96, 165, 250, 0.2);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        position: relative;
+        animation: fadeInUp 0.6s ease-out backwards;
+    }
+    
+    body.light-mode .course-card {
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid rgba(3, 105, 161, 0.2);
+        box-shadow: 0 4px 20px rgba(14, 165, 233, 0.15);
+    }
+    
+    .course-card:nth-child(1) { animation-delay: 0.1s; }
+    .course-card:nth-child(2) { animation-delay: 0.2s; }
+    .course-card:nth-child(3) { animation-delay: 0.3s; }
+    .course-card:nth-child(4) { animation-delay: 0.4s; }
+    .course-card:nth-child(5) { animation-delay: 0.5s; }
+    .course-card:nth-child(6) { animation-delay: 0.6s; }
+    
+    .course-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 0;
+    }
+    
+    body.light-mode .course-card::before {
+        background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+    }
+    
+    .course-card:hover::before {
+        opacity: 0.08;
+    }
+    
+    .course-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(37, 99, 235, 0.5);
+        border-color: rgba(96, 165, 250, 0.5);
+    }
+    
+    body.light-mode .course-card:hover {
+        box-shadow: 0 10px 35px rgba(14, 165, 233, 0.35);
+        border-color: rgba(3, 105, 161, 0.4);
+    }
+    
+    .course-image {
+        width: 100%;
+        height: 200px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    
+    .course-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.5);
+    }
+    
+    .course-content {
+        padding: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .course-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        display: block;
+        animation: float-icon 2.5s ease-in-out infinite;
+    }
+    
+    @keyframes float-icon {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    
+    .course-card h3 {
+        background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+        transition: all 0.5s ease;
+    }
+    
+    body.light-mode .course-card h3 {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .course-card p {
+        color: #bfdbfe;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        transition: color 0.5s ease;
+    }
+    
+    body.light-mode .course-card p {
+        color: #334155;
+    }
+    
+    .course-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid rgba(96, 165, 250, 0.2);
+    }
+    
+    body.light-mode .course-meta {
+        border-top-color: rgba(3, 105, 161, 0.2);
+    }
+    
+    .course-level {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+    }
+    
+    body.light-mode .course-level {
+        background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+        box-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
+    }
+    
+    .course-duration {
+        color: #93c5fd;
+        font-size: 0.9rem;
+        transition: color 0.5s ease;
+    }
+    
+    body.light-mode .course-duration {
+        color: #0369a1;
+        font-weight: 500;
+    }
+    
+    .btn-enroll {
+        display: block;
+        width: 100%;
+        margin-top: 1.5rem;
+        padding: 0.8rem 1.5rem;
+        background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4),
+                    0 0 20px rgba(239, 68, 68, 0.3);
+        animation: pulse-btn 2s infinite;
+    }
+    
+    .btn-enroll:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 6px 25px rgba(220, 38, 38, 0.6),
+                    0 0 30px rgba(239, 68, 68, 0.5);
+    }
+    
+    @keyframes pulse-btn {
+        0%, 100% {
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4),
+                        0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        50% {
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.6),
+                        0 0 30px rgba(239, 68, 68, 0.5);
+        }
+    }
+    
+    @media (max-width: 968px) {
+        .course-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h2>📚 Catalogue de Cours</h2>
+        <p>Explorez notre collection de cours et commencez votre parcours d'apprentissage</p>
+    </div>
+    
+    <div class="course-grid">
+        <div class="course-card">
+            <div class="course-image" style="background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop');">
+                <span class="course-badge">🔥 Populaire</span>
+            </div>
+            <div class="course-content">
+                <span class="course-icon">📐</span>
+                <h3>Mathématiques Avancées</h3>
+                <p>Découvrez les concepts avancés des mathématiques : calcul différentiel, algèbre linéaire et plus encore.</p>
+                <div class="course-meta">
+                    <span class="course-level">Avancé</span>
+                    <span class="course-duration">⏱️ 40h</span>
+                </div>
+                <a href="#" class="btn-enroll">Commencer le Cours</a>
+            </div>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-image" style="background-image: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop');">
+                <span class="course-badge">✨ Nouveau</span>
+            </div>
+            <div class="course-content">
+                <span class="course-icon">💻</span>
+                <h3>Programmation Web</h3>
+                <p>Apprenez à créer des sites web modernes avec HTML, CSS, JavaScript et les frameworks populaires.</p>
+                <div class="course-meta">
+                    <span class="course-level">Intermédiaire</span>
+                    <span class="course-duration">⏱️ 35h</span>
+                </div>
+                <a href="#" class="btn-enroll">Commencer le Cours</a>
+            </div>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-image" style="background-image: url('https://images.unsplash.com/photo-1636690513751-bdf8fe2e3d0a?w=600&h=400&fit=crop');">
+                <span class="course-badge">⭐ Recommandé</span>
+            </div>
+            <div class="course-content">
+                <span class="course-icon">⚛️</span>
+                <h3>Physique Quantique</h3>
+                <p>Explorez les mystères de la mécanique quantique et ses applications dans le monde moderne.</p>
+                <div class="course-meta">
+                    <span class="course-level">Avancé</span>
+                    <span class="course-duration">⏱️ 50h</span>
+                </div>
+                <a href="#" class="btn-enroll">Commencer le Cours</a>
+            </div>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-image" style="background-image: url('https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&h=400&fit=crop');">
+                <span class="course-badge">💼 Professionnel</span>
+            </div>
+            <div class="course-content">
+                <span class="course-icon">📱</span>
+                <h3>Marketing Digital</h3>
+                <p>Maîtrisez les stratégies du marketing en ligne : SEO, réseaux sociaux, publicité digitale.</p>
+                <div class="course-meta">
+                    <span class="course-level">Débutant</span>
+                    <span class="course-duration">⏱️ 25h</span>
+                </div>
+                <a href="#" class="btn-enroll">Commencer le Cours</a>
+            </div>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-image" style="background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop');">
+                <span class="course-badge">🚀 Tendance</span>
+            </div>
+            <div class="course-content">
+                <span class="course-icon">🤖</span>
+                <h3>Intelligence Artificielle</h3>
+                <p>Découvrez les fondamentaux de l'IA, du machine learning et du deep learning.</p>
+                <div class="course-meta">
+                    <span class="course-level">Avancé</span>
+                    <span class="course-duration">⏱️ 60h</span>
+                </div>
+                <a href="#" class="btn-enroll">Commencer le Cours</a>
+            </div>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-image" style="background-image: url('https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&h=400&fit=crop');">
+                <span class="course-badge">🎨 Créatif</span>
+            </div>
+            <div class="course-content">
+                <span class="course-icon">🎨</span>
+                <h3>Design Graphique</h3>
+                <p>Apprenez les principes du design, la typographie, les couleurs et les outils professionnels.</p>
+                <div class="course-meta">
+                    <span class="course-level">Intermédiaire</span>
+                    <span class="course-duration">⏱️ 30h</span>
+                </div>
+                <a href="#" class="btn-enroll">Commencer le Cours</a>
+            </div>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-image" style="background-image: url('https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop');">
+                <span class="course-badge">📊 Analytique</span>
+            </div>
+            <div class="course-content">
+                <span class="course-icon">📊</span>
+                <h3>Data Science</h3>
+                <p>Maîtrisez l'analyse de données, la visualisation et les techniques statistiques avancées.</p>
+                <div class="course-meta">
+                    <span class="course-level">Intermédiaire</span>
+                    <span class="course-duration">⏱️ 45h</span>
+                </div>
+                <a href="#" class="btn-enroll">Commencer le Cours</a>
+            </div>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-image" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop');">
+                <span class="course-badge">💡 Business</span>
+            </div>
+            <div class="course-content">
+                <span class="course-icon">💡</span>
+                <h3>Entrepreneuriat</h3>
+                <p>Apprenez à lancer et gérer votre propre entreprise avec succès.</p>
+                <div class="course-meta">
+                    <span class="course-level">Tous niveaux</span>
+                    <span class="course-duration">⏱️ 28h</span>
+                </div>
+                <a href="#" class="btn-enroll">Commencer le Cours</a>
+            </div>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-image" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop');">
+                <span class="course-badge">🔒 Sécurité</span>
+            </div>
+            <div class="course-content">
+                <span class="course-icon">🔒</span>
+                <h3>Cybersécurité</h3>
+                <p>Protégez les systèmes et les données contre les cybermenaces modernes.</p>
+                <div class="course-meta">
+                    <span class="course-level">Avancé</span>
+                    <span class="course-duration">⏱️ 55h</span>
+                </div>
+                <a href="#" class="btn-enroll">Commencer le Cours</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

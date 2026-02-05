@@ -1,0 +1,389 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Dashboard - Admin{% endblock %}
+{% block page_title %}📊 Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #eef2f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stat-info h3 {
+            color: #718096;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-info p {
+            color: #1e3c72;
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            flex-shrink: 0;
+        }
+        
+        .stat-icon.blue {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .stat-icon.green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .stat-icon.orange {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .stat-icon.purple {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 14px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #eef2f7;
+        }
+        
+        .chart-card h3 {
+            color: #1e3c72;
+            margin-bottom: 1.5rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+        
+        .chart-placeholder {
+            background: linear-gradient(135deg, #f7fafc 0%, #eef2f7 100%);
+            height: 300px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a0aec0;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .recent-activities {
+            background: white;
+            border-radius: 14px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #eef2f7;
+            margin-bottom: 2rem;
+        }
+        
+        .recent-activities h3 {
+            color: #1e3c72;
+            margin-bottom: 2rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.3rem;
+            border-bottom: 1px solid #eef2f7;
+            transition: all 0.3s;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .activity-item:hover {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .activity-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            font-weight: 600;
+        }
+        
+        .activity-icon.blue {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .activity-icon.green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .activity-icon.orange {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            font-size: 0.95rem;
+        }
+        
+        .activity-time {
+            color: #a0aec0;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+        
+        .quick-action-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: #1e3c72;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quick-action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .quick-action-btn:hover {
+            border-color: #1e3c72;
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(30, 60, 114, 0.15);
+        }
+        
+        .quick-action-btn:hover::before {
+            left: 100%;
+        }
+        
+        .quick-action-btn i {
+            font-size: 2.3rem;
+            margin-bottom: 0.8rem;
+            display: block;
+        }
+        
+        .quick-action-btn strong {
+            font-size: 0.95rem;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-info">
+            <h3>Total Utilisateurs</h3>
+            <p>1,248</p>
+        </div>
+        <div class="stat-icon blue">👥</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-info">
+            <h3>Total Cours</h3>
+            <p>85</p>
+        </div>
+        <div class="stat-icon green">📚</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-info">
+            <h3>Quiz Actifs</h3>
+            <p>142</p>
+        </div>
+        <div class="stat-icon orange">📝</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-info">
+            <h3>Stages Disponibles</h3>
+            <p>37</p>
+        </div>
+        <div class="stat-icon purple">🎓</div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="charts-grid">
+    <div class="chart-card">
+        <h3>📈 Inscriptions (6 derniers mois)</h3>
+        <div class="chart-placeholder">
+            Graphique des inscriptions mensuelles
+        </div>
+    </div>
+    
+    <div class="chart-card">
+        <h3>📊 Répartition des cours</h3>
+        <div class="chart-placeholder">
+            Graphique en camembert
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="recent-activities">
+    <h3>🕐 Activités Récentes</h3>
+    
+    <div class="activity-item">
+        <div class="activity-icon blue">👤</div>
+        <div class="activity-content">
+            <div class="activity-title">Nouvel utilisateur inscrit : Marie Dubois</div>
+            <div class="activity-time">Il y a 5 minutes</div>
+        </div>
+    </div>
+    
+    <div class="activity-item">
+        <div class="activity-icon green">📚</div>
+        <div class="activity-content">
+            <div class="activity-title">Nouveau cours publié : "Introduction à Python"</div>
+            <div class="activity-time">Il y a 1 heure</div>
+        </div>
+    </div>
+    
+    <div class="activity-item">
+        <div class="activity-icon orange">📝</div>
+        <div class="activity-content">
+            <div class="activity-title">Quiz "Mathématiques Avancées" complété par 45 étudiants</div>
+            <div class="activity-time">Il y a 2 heures</div>
+        </div>
+    </div>
+    
+    <div class="activity-item">
+        <div class="activity-icon blue">🎓</div>
+        <div class="activity-content">
+            <div class="activity-title">Nouvelle offre de stage ajoutée : "Développeur Full-Stack"</div>
+            <div class="activity-time">Il y a 3 heures</div>
+        </div>
+    </div>
+    
+    <div class="activity-item">
+        <div class="activity-icon green">👤</div>
+        <div class="activity-content">
+            <div class="activity-title">10 nouveaux étudiants ont complété leur profil</div>
+            <div class="activity-time">Il y a 5 heures</div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <a href="{{ path('admin_utilisateurs') }}" class="quick-action-btn">
+        <i>➕</i>
+        <strong>Ajouter Utilisateur</strong>
+    </a>
+    <a href="{{ path('admin_cours') }}" class="quick-action-btn">
+        <i>📚</i>
+        <strong>Nouveau Cours</strong>
+    </a>
+    <a href="{{ path('admin_quiz') }}" class="quick-action-btn">
+        <i>📝</i>
+        <strong>Créer Quiz</strong>
+    </a>
+    <a href="{{ path('admin_stages') }}" class="quick-action-btn">
+        <i>🎓</i>
+        <strong>Ajouter Stage</strong>
+    </a>
+</div>
+{% endblock %}

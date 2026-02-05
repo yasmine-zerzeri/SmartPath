@@ -1,0 +1,438 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Gestion Quiz - Admin{% endblock %}
+{% block page_title %}📝 Gestion des Quiz{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-bar input,
+        .filter-bar select {
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .filter-bar input {
+            flex: 1;
+        }
+        
+        .quiz-list {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .quiz-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        
+        .quiz-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .quiz-item:last-child {
+            border-bottom: none;
+        }
+        
+        .quiz-info h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .quiz-course {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .quiz-difficulty {
+            display: flex;
+            gap: 0.3rem;
+            align-items: center;
+        }
+        
+        .difficulty-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e0e0e0;
+        }
+        
+        .difficulty-dot.active {
+            background: #3498db;
+        }
+        
+        .quiz-stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            display: block;
+            color: #2c3e50;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+        
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .badge-published {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-draft {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-icon {
+            padding: 0.5rem 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card h4 {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card p {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        @media (max-width: 1200px) {
+            .quiz-item {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .action-buttons {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="stats-overview">
+    <div class="stat-card">
+        <h4>Total Quiz</h4>
+        <p>142</p>
+    </div>
+    <div class="stat-card">
+        <h4>Actifs</h4>
+        <p>128</p>
+    </div>
+    <div class="stat-card">
+        <h4>Complétions</h4>
+        <p>5,234</p>
+    </div>
+    <div class="stat-card">
+        <h4>Score Moyen</h4>
+        <p>78%</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="page-header">
+        <h3>Liste des Quiz</h3>
+        <button class="btn btn-primary">➕ Nouveau Quiz</button>
+    </div>
+    
+    <div class="filter-bar">
+        <input type="text" placeholder="🔍 Rechercher un quiz...">
+        <select>
+            <option>Tous les cours</option>
+            <option>Mathématiques</option>
+            <option>Programmation</option>
+            <option>Marketing</option>
+            <option>Design</option>
+        </select>
+        <select>
+            <option>Toutes difficultés</option>
+            <option>Facile</option>
+            <option>Moyen</option>
+            <option>Difficile</option>
+        </select>
+        <select>
+            <option>Tous les statuts</option>
+            <option>Publié</option>
+            <option>Brouillon</option>
+        </select>
+    </div>
+</div>
+
+<div class="quiz-list">
+    <div class="quiz-item">
+        <div class="quiz-info">
+            <h4>Quiz : Calcul Différentiel</h4>
+            <div class="quiz-course">📚 Mathématiques Avancées</div>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">20</span>
+            <span class="stat-label">Questions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">145</span>
+            <span class="stat-label">Complétions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <div class="quiz-difficulty">
+                <span class="difficulty-dot active"></span>
+                <span class="difficulty-dot active"></span>
+                <span class="difficulty-dot active"></span>
+            </div>
+            <span class="stat-label">Difficile</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="badge badge-published">✓ Publié</span>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="quiz-item">
+        <div class="quiz-info">
+            <h4>Quiz : JavaScript ES6+</h4>
+            <div class="quiz-course">📚 Programmation Web</div>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">15</span>
+            <span class="stat-label">Questions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">298</span>
+            <span class="stat-label">Complétions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <div class="quiz-difficulty">
+                <span class="difficulty-dot active"></span>
+                <span class="difficulty-dot active"></span>
+                <span class="difficulty-dot"></span>
+            </div>
+            <span class="stat-label">Moyen</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="badge badge-published">✓ Publié</span>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="quiz-item">
+        <div class="quiz-info">
+            <h4>Quiz : Mécanique Quantique</h4>
+            <div class="quiz-course">📚 Physique Quantique</div>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">25</span>
+            <span class="stat-label">Questions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">0</span>
+            <span class="stat-label">Complétions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <div class="quiz-difficulty">
+                <span class="difficulty-dot active"></span>
+                <span class="difficulty-dot active"></span>
+                <span class="difficulty-dot active"></span>
+            </div>
+            <span class="stat-label">Difficile</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="badge badge-draft">📝 Brouillon</span>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="quiz-item">
+        <div class="quiz-info">
+            <h4>Quiz : SEO & Référencement</h4>
+            <div class="quiz-course">📚 Marketing Digital</div>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">18</span>
+            <span class="stat-label">Questions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">412</span>
+            <span class="stat-label">Complétions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <div class="quiz-difficulty">
+                <span class="difficulty-dot active"></span>
+                <span class="difficulty-dot"></span>
+                <span class="difficulty-dot"></span>
+            </div>
+            <span class="stat-label">Facile</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="badge badge-published">✓ Publié</span>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="quiz-item">
+        <div class="quiz-info">
+            <h4>Quiz : Machine Learning Basics</h4>
+            <div class="quiz-course">📚 Intelligence Artificielle</div>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">22</span>
+            <span class="stat-label">Questions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">187</span>
+            <span class="stat-label">Complétions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <div class="quiz-difficulty">
+                <span class="difficulty-dot active"></span>
+                <span class="difficulty-dot active"></span>
+                <span class="difficulty-dot active"></span>
+            </div>
+            <span class="stat-label">Difficile</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="badge badge-published">✓ Publié</span>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="quiz-item">
+        <div class="quiz-info">
+            <h4>Quiz : Théorie des Couleurs</h4>
+            <div class="quiz-course">📚 Design Graphique</div>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">12</span>
+            <span class="stat-label">Questions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="stat-value">256</span>
+            <span class="stat-label">Complétions</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <div class="quiz-difficulty">
+                <span class="difficulty-dot active"></span>
+                <span class="difficulty-dot"></span>
+                <span class="difficulty-dot"></span>
+            </div>
+            <span class="stat-label">Facile</span>
+        </div>
+        
+        <div class="quiz-stat">
+            <span class="badge badge-published">✓ Publié</span>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

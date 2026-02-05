@@ -1,0 +1,381 @@
+{% extends 'dashboard_base.html.twig' %}
+
+{% block title %}Mon Profil - SmartPath{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .profile-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+        }
+        
+        .profile-sidebar {
+            background: rgba(10, 22, 40, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 30px rgba(37, 99, 235, 0.5);
+        }
+        
+        .profile-name {
+            text-align: center;
+            color: #e0f2fe;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-email {
+            text-align: center;
+            color: #93c5fd;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-stats {
+            border-top: 1px solid rgba(96, 165, 250, 0.2);
+            padding-top: 1.5rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+        
+        .stat-label {
+            color: #bfdbfe;
+        }
+        
+        .stat-value {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
+        .profile-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .profile-section {
+            background: rgba(10, 22, 40, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(96, 165, 250, 0.2);
+        }
+        
+        .section-header h3 {
+            color: #e0f2fe;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .edit-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+        }
+        
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.6);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            color: #93c5fd;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-value {
+            color: #e0f2fe;
+            font-size: 1rem;
+        }
+        
+        .progress-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-title {
+            color: #e0f2fe;
+            font-weight: 500;
+        }
+        
+        .progress-percent {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(37, 99, 235, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+            border-radius: 10px;
+            transition: width 0.3s;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.8);
+        }
+        
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+        
+        .achievement {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 10px;
+            transition: all 0.3s;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+        }
+        
+        .achievement:hover {
+            transform: translateY(-5px);
+            background: rgba(37, 99, 235, 0.2);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+        
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .achievement-name {
+            color: #bfdbfe;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="profile-container">
+        <!-- Sidebar -->
+        <div class="profile-sidebar">
+            <div class="profile-avatar">👤</div>
+            <h2 class="profile-name">Jean Dupont</h2>
+            <p class="profile-email">jean.dupont@email.com</p>
+            
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Cours suivis</span>
+                    <span class="stat-value">12</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Quiz complétés</span>
+                    <span class="stat-value">45</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Score moyen</span>
+                    <span class="stat-value">85%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Heures d'étude</span>
+                    <span class="stat-value">156h</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="profile-main">
+            <!-- Informations personnelles -->
+            <div class="profile-section">
+                <div class="section-header">
+                    <h3>📋 Informations personnelles</h3>
+                    <button class="edit-btn">Modifier</button>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Nom complet</span>
+                        <span class="info-value">Jean Dupont</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">jean.dupont@email.com</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Téléphone</span>
+                        <span class="info-value">+33 6 12 34 56 78</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Date de naissance</span>
+                        <span class="info-value">15 Mars 2000</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ville</span>
+                        <span class="info-value">Paris, France</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Niveau d'études</span>
+                        <span class="info-value">Master 1</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progression des cours -->
+            <div class="profile-section">
+                <div class="section-header">
+                    <h3>📊 Progression des cours</h3>
+                </div>
+                
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="progress-title">Mathématiques Avancées</span>
+                        <span class="progress-percent">75%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="width: 75%"></div>
+                    </div>
+                </div>
+                
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="progress-title">Programmation Web</span>
+                        <span class="progress-percent">92%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="width: 92%"></div>
+                    </div>
+                </div>
+                
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="progress-title">Intelligence Artificielle</span>
+                        <span class="progress-percent">45%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="width: 45%"></div>
+                    </div>
+                </div>
+                
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span class="progress-title">Marketing Digital</span>
+                        <span class="progress-percent">100%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Badges et réalisations -->
+            <div class="profile-section">
+                <div class="section-header">
+                    <h3>🏆 Badges et Réalisations</h3>
+                </div>
+                
+                <div class="achievement-grid">
+                    <div class="achievement">
+                        <div class="achievement-icon">🥇</div>
+                        <div class="achievement-name">Premier Quiz</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-icon">🎯</div>
+                        <div class="achievement-name">Score Parfait</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-icon">📚</div>
+                        <div class="achievement-name">10 Cours</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-icon">⚡</div>
+                        <div class="achievement-name">Rapide</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-icon">🔥</div>
+                        <div class="achievement-name">Série de 7</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-icon">💎</div>
+                        <div class="achievement-name">Étudiant Premium</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

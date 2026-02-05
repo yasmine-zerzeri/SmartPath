@@ -1,0 +1,423 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Gestion Stages - Admin{% endblock %}
+{% block page_title %}🎓 Gestion des Stages{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-bar input,
+        .filter-bar select {
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .filter-bar input {
+            flex: 1;
+        }
+        
+        .stages-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .stage-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 2rem;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+        
+        .stage-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .stage-main h4 {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stage-company {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .stage-details {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .detail-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: #555;
+            font-size: 0.85rem;
+        }
+        
+        .stage-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            display: block;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.8rem;
+        }
+        
+        .stage-status {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .badge {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .badge-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-expired {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .deadline {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .btn-icon {
+            padding: 0.6rem;
+            font-size: 1rem;
+        }
+        
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card h4 {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card p {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        @media (max-width: 1200px) {
+            .stage-card {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="stats-overview">
+    <div class="stat-card">
+        <h4>Total Stages</h4>
+        <p>37</p>
+    </div>
+    <div class="stat-card">
+        <h4>Actifs</h4>
+        <p>28</p>
+    </div>
+    <div class="stat-card">
+        <h4>Candidatures</h4>
+        <p>245</p>
+    </div>
+    <div class="stat-card">
+        <h4>Entreprises</h4>
+        <p>19</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="page-header">
+        <h3>Liste des Offres de Stage</h3>
+        <button class="btn btn-primary">➕ Nouvelle Offre</button>
+    </div>
+    
+    <div class="filter-bar">
+        <input type="text" placeholder="🔍 Rechercher un stage...">
+        <select>
+            <option>Toutes les villes</option>
+            <option>Paris</option>
+            <option>Lyon</option>
+            <option>Toulouse</option>
+            <option>Bordeaux</option>
+        </select>
+        <select>
+            <option>Toutes les durées</option>
+            <option>3 mois</option>
+            <option>4-6 mois</option>
+            <option>6+ mois</option>
+        </select>
+        <select>
+            <option>Tous les statuts</option>
+            <option>Actif</option>
+            <option>Expiré</option>
+            <option>En attente</option>
+        </select>
+    </div>
+</div>
+
+<div class="stages-grid">
+    <div class="stage-card">
+        <div class="stage-main">
+            <h4>Stage Développement Web Full-Stack</h4>
+            <div class="stage-company">🏢 TechCorp Solutions</div>
+            <div class="stage-details">
+                <span class="detail-tag">📍 Paris</span>
+                <span class="detail-tag">⏱️ 6 mois</span>
+                <span class="detail-tag">💰 800€/mois</span>
+                <span class="detail-tag">📅 Début : Mars 2026</span>
+            </div>
+        </div>
+        
+        <div class="stage-stats">
+            <div class="stat-item">
+                <span class="stat-value">42</span>
+                <span class="stat-label">Candidatures</span>
+            </div>
+        </div>
+        
+        <div class="stage-status">
+            <span class="badge badge-active">✓ Actif</span>
+            <div class="deadline">⏰ Expire le 15/02</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="stage-card">
+        <div class="stage-main">
+            <h4>Stage Data Science & IA</h4>
+            <div class="stage-company">🏢 AI Innovations Lab</div>
+            <div class="stage-details">
+                <span class="detail-tag">📍 Lyon</span>
+                <span class="detail-tag">⏱️ 4-6 mois</span>
+                <span class="detail-tag">💰 900€/mois</span>
+                <span class="detail-tag">📅 Début : Avril 2026</span>
+            </div>
+        </div>
+        
+        <div class="stage-stats">
+            <div class="stat-item">
+                <span class="stat-value">58</span>
+                <span class="stat-label">Candidatures</span>
+            </div>
+        </div>
+        
+        <div class="stage-status">
+            <span class="badge badge-active">✓ Actif</span>
+            <div class="deadline">⏰ Expire le 20/02</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="stage-card">
+        <div class="stage-main">
+            <h4>Stage Marketing Digital</h4>
+            <div class="stage-company">🏢 Digital Growth Agency</div>
+            <div class="stage-details">
+                <span class="detail-tag">📍 Bordeaux</span>
+                <span class="detail-tag">⏱️ 5 mois</span>
+                <span class="detail-tag">💰 700€/mois</span>
+                <span class="detail-tag">📅 Début : Mai 2026</span>
+            </div>
+        </div>
+        
+        <div class="stage-stats">
+            <div class="stat-item">
+                <span class="stat-value">31</span>
+                <span class="stat-label">Candidatures</span>
+            </div>
+        </div>
+        
+        <div class="stage-status">
+            <span class="badge badge-active">✓ Actif</span>
+            <div class="deadline">⏰ Expire le 28/02</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="stage-card">
+        <div class="stage-main">
+            <h4>Stage Design UX/UI</h4>
+            <div class="stage-company">🏢 Creative Studio Design</div>
+            <div class="stage-details">
+                <span class="detail-tag">📍 Toulouse</span>
+                <span class="detail-tag">⏱️ 6 mois</span>
+                <span class="detail-tag">💰 750€/mois</span>
+                <span class="detail-tag">📅 Début : Mars 2026</span>
+            </div>
+        </div>
+        
+        <div class="stage-stats">
+            <div class="stat-item">
+                <span class="stat-value">45</span>
+                <span class="stat-label">Candidatures</span>
+            </div>
+        </div>
+        
+        <div class="stage-status">
+            <span class="badge badge-active">✓ Actif</span>
+            <div class="deadline">⏰ Expire le 10/02</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="stage-card">
+        <div class="stage-main">
+            <h4>Stage Cybersécurité</h4>
+            <div class="stage-company">🏢 SecureNet Systems</div>
+            <div class="stage-details">
+                <span class="detail-tag">📍 Nantes</span>
+                <span class="detail-tag">⏱️ 6 mois</span>
+                <span class="detail-tag">💰 950€/mois</span>
+                <span class="detail-tag">📅 Début : Juin 2026</span>
+            </div>
+        </div>
+        
+        <div class="stage-stats">
+            <div class="stat-item">
+                <span class="stat-value">37</span>
+                <span class="stat-label">Candidatures</span>
+            </div>
+        </div>
+        
+        <div class="stage-status">
+            <span class="badge badge-active">✓ Actif</span>
+            <div class="deadline">⏰ Expire le 05/03</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+    
+    <div class="stage-card">
+        <div class="stage-main">
+            <h4>Stage Développement Mobile</h4>
+            <div class="stage-company">🏢 MobileFirst Apps</div>
+            <div class="stage-details">
+                <span class="detail-tag">📍 Lille</span>
+                <span class="detail-tag">⏱️ 5 mois</span>
+                <span class="detail-tag">💰 850€/mois</span>
+                <span class="detail-tag">📅 Début : Avril 2026</span>
+            </div>
+        </div>
+        
+        <div class="stage-stats">
+            <div class="stat-item">
+                <span class="stat-value">32</span>
+                <span class="stat-label">Candidatures</span>
+            </div>
+        </div>
+        
+        <div class="stage-status">
+            <span class="badge badge-pending">⏳ En attente</span>
+            <div class="deadline">⏰ Expire le 18/02</div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary btn-icon">👁️</button>
+            <button class="btn btn-warning btn-icon">✏️</button>
+            <button class="btn btn-danger btn-icon">🗑️</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

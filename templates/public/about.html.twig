@@ -1,0 +1,285 @@
+{% extends 'public/base.html.twig' %}
+
+{% block title %}SmartPath - À Propos{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .about-hero {
+        padding: 4rem 2rem;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    .about-hero h1 {
+        font-size: 3.5rem;
+        background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        filter: drop-shadow(0 0 30px rgba(96, 165, 250, 0.5));
+    }
+    
+    body.light-mode .about-hero h1 {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 15px rgba(14, 165, 233, 0.3));
+    }
+    
+    .about-hero p {
+        font-size: 1.3rem;
+        color: #bfdbfe;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.8;
+    }
+    
+    body.light-mode .about-hero p {
+        color: #0c4a6e;
+        font-weight: 500;
+    }
+    
+    .about-section {
+        padding: 4rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .about-content {
+        background: rgba(10, 22, 40, 0.8);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 20px;
+        padding: 3rem;
+        margin-bottom: 3rem;
+    }
+    
+    body.light-mode .about-content {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(3, 105, 161, 0.2);
+        box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1);
+    }
+    
+    .about-content h2 {
+        font-size: 2rem;
+        background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+    }
+    
+    body.light-mode .about-content h2 {
+        background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .about-content p {
+        color: #bfdbfe;
+        line-height: 1.8;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    body.light-mode .about-content p {
+        color: #334155;
+    }
+    
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+    
+    .value-card {
+        background: rgba(10, 22, 40, 0.8);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    body.light-mode .value-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(3, 105, 161, 0.2);
+    }
+    
+    .value-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(59, 130, 246, 0.3);
+    }
+    
+    .value-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+        animation: float-icon 2.5s ease-in-out infinite;
+    }
+    
+    @keyframes float-icon {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    
+    .value-card h3 {
+        color: #93c5fd;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+    
+    body.light-mode .value-card h3 {
+        color: #0284c7;
+    }
+    
+    .value-card p {
+        color: #bfdbfe;
+        line-height: 1.6;
+    }
+    
+    body.light-mode .value-card p {
+        color: #334155;
+    }
+    
+    .team-section {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+    
+    .team-section h2 {
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 3rem;
+        font-weight: 700;
+    }
+    
+    body.light-mode .team-section h2 {
+        background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    @media (max-width: 768px) {
+        .about-hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .about-content {
+            padding: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="about-hero">
+        <h1>ℹ️ À Propos de SmartPath</h1>
+        <p>
+            Nous sommes dédiés à transformer l'éducation en la rendant accessible, 
+            engageante et adaptée aux besoins de chaque apprenant.
+        </p>
+    </div>
+    
+    <div class="about-section">
+        <div class="about-content">
+            <h2>🎯 Notre Mission</h2>
+            <p>
+                SmartPath a été créé avec une vision simple mais puissante : démocratiser l'accès à 
+                l'éducation de qualité pour tous. Nous croyons que l'apprentissage devrait être 
+                personnalisé, interactif et accessible à tout moment, n'importe où.
+            </p>
+            <p>
+                Notre plateforme utilise les dernières technologies éducatives pour créer des 
+                expériences d'apprentissage immersives qui s'adaptent au rythme et au style de 
+                chaque étudiant. Nous ne nous contentons pas de fournir du contenu - nous créons 
+                des parcours d'apprentissage intelligents qui évoluent avec vous.
+            </p>
+        </div>
+        
+        <div class="about-content">
+            <h2>🌟 Notre Vision</h2>
+            <p>
+                Nous imaginons un monde où chacun peut accéder aux connaissances et aux compétences 
+                nécessaires pour réaliser ses rêves et atteindre son plein potentiel. SmartPath 
+                s'efforce d'être le pont entre les aspirations et la réalisation, en offrant des 
+                outils et des ressources qui transforment l'apprentissage en une aventure passionnante.
+            </p>
+        </div>
+        
+        <h2 style="text-align: center; font-size: 2.5rem; background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 3rem 0 2rem;">
+            💎 Nos Valeurs
+        </h2>
+        
+        <div class="values-grid">
+            <div class="value-card">
+                <span class="value-icon">🚀</span>
+                <h3>Innovation</h3>
+                <p>
+                    Nous repoussons constamment les limites de ce qui est possible dans l'éducation 
+                    en ligne, en adoptant les nouvelles technologies et méthodologies.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <span class="value-icon">🤝</span>
+                <h3>Accessibilité</h3>
+                <p>
+                    L'éducation est un droit, pas un privilège. Nous nous engageons à rendre 
+                    l'apprentissage accessible à tous, partout dans le monde.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <span class="value-icon">⭐</span>
+                <h3>Excellence</h3>
+                <p>
+                    Nous ne compromettrons jamais sur la qualité. Chaque cours, chaque ressource 
+                    est conçue avec le plus grand soin pour garantir les meilleurs résultats.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <span class="value-icon">❤️</span>
+                <h3>Passion</h3>
+                <p>
+                    Nous aimons ce que nous faisons. Cette passion se reflète dans chaque aspect 
+                    de notre plateforme et dans notre engagement envers votre succès.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <span class="value-icon">🌍</span>
+                <h3>Communauté</h3>
+                <p>
+                    Nous créons plus qu'une plateforme - nous construisons une communauté mondiale 
+                    d'apprenants passionnés et d'éducateurs dévoués.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <span class="value-icon">🎓</span>
+                <h3>Impact</h3>
+                <p>
+                    Notre succès se mesure par le vôtre. Nous sommes déterminés à avoir un impact 
+                    positif et durable sur la vie de chaque apprenant.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

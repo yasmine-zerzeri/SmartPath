@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Back Office - SmartPath{% endblock %}</title>
+    
+    {% block stylesheets %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #2c3e50;
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            background: #1a252f;
+            border-bottom: 1px solid #34495e;
+        }
+        
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .sidebar-header p {
+            color: #95a5a6;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+        
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+        
+        .menu-item {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover,
+        .menu-item.active {
+            background: #34495e;
+            color: white;
+            border-left-color: #3498db;
+        }
+        
+        .menu-item i {
+            margin-right: 0.8rem;
+            width: 20px;
+            display: inline-block;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2rem;
+            width: calc(100% - 260px);
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .top-bar h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .content-area {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+        
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            color: #555;
+        }
+        
+        table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #d68910;
+        }
+        
+        .btn-sm {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stat-info h3 {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-info p {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+        
+        .stat-icon.blue {
+            background: #e3f2fd;
+            color: #2196f3;
+        }
+        
+        .stat-icon.green {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+        
+        .stat-icon.orange {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+        
+        .stat-icon.purple {
+            background: #f3e5f5;
+            color: #9c27b0;
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>📚 StudyPlus</h1>
+            <p>Back Office</p>
+        </div>
+        
+            <nav class="sidebar-menu"> 
+                <a href="{{ path('admin_dashboard') }}" class="menu-item {% if app.request.get('_route') == 'admin_dashboard' %}active{% endif %}"> 
+                <i>📊</i> Dashboard
+            </a>
+            <a href="{{ path('admin_utilisateurs') }}" class="menu-item {% if app.request.get('_route') == 'admin_utilisateurs' %}active{% endif %}">
+                <i>👤</i> Gestion Utilisateurs
+            </a>
+            <a href="{{ path('admin_cours') }}" class="menu-item {% if app.request.get('_route') == 'admin_cours' %}active{% endif %}">
+                <i>📚</i> Gestion Cours
+            </a>
+            <a href="{{ path('admin_quiz') }}" class="menu-item {% if app.request.get('_route') == 'admin_quiz' %}active{% endif %}">
+                <i>📝</i> Gestion Quiz
+            </a>
+            <a href="{{ path('admin_stages') }}" class="menu-item {% if app.request.get('_route') == 'admin_stages' %}active{% endif %}">
+                    <i>🎓</i> Gestion Stages 
+            </a>
+            <a href="{{ path('admin_parametres') }}" class="menu-item {% if app.request.get('_route') == 'admin_parametres' %}active{% endif %}">
+                <i>⚙️</i> Paramètres
+            </a>
+        </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="top-bar">
+                <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+            <div class="user-info">
+                <span>Admin</span>
+                <div class="user-avatar">A</div>
+            </div>
+        </div>
+        
+        {% block body %}{% endblock %}
+    </main>
+    
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

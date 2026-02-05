@@ -1,0 +1,520 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Paramètres - Admin{% endblock %}
+{% block page_title %}⚙️ Paramètres{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .settings-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+        
+        .settings-sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        
+        .settings-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .settings-menu-item {
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .settings-menu-item:hover,
+        .settings-menu-item.active {
+            background: #f0f0f0;
+            color: #3498db;
+        }
+        
+        .settings-content {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-header h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+        }
+        
+        .section-header p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-group small {
+            display: block;
+            color: #7f8c8d;
+            margin-top: 0.3rem;
+            font-size: 0.85rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .toggle-content {
+            flex: 1;
+        }
+        
+        .toggle-title {
+            color: #2c3e50;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+        
+        .toggle-description {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 26px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #3498db;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        .save-bar {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 1.5rem;
+            border-top: 2px solid #e0e0e0;
+            margin: -2rem -2rem 0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #3498db;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-box p {
+            color: #1565c0;
+            margin: 0;
+        }
+        
+        .danger-zone {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .danger-zone h4 {
+            color: #c62828;
+            margin-bottom: 1rem;
+        }
+        
+        .danger-zone p {
+            color: #d32f2f;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .settings-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="settings-container">
+    <!-- Sidebar -->
+    <div class="settings-sidebar">
+        <div class="settings-menu">
+            <a href="#general" class="settings-menu-item active">
+                <span>🏢</span> Général
+            </a>
+            <a href="#email" class="settings-menu-item">
+                <span>📧</span> Email
+            </a>
+            <a href="#security" class="settings-menu-item">
+                <span>🔒</span> Sécurité
+            </a>
+            <a href="#notifications" class="settings-menu-item">
+                <span>🔔</span> Notifications
+            </a>
+            <a href="#backup" class="settings-menu-item">
+                <span>💾</span> Sauvegarde
+            </a>
+        </div>
+    </div>
+    
+    <!-- Content -->
+    <div class="settings-content">
+        <!-- Section Général -->
+        <div class="section" id="general">
+            <div class="section-header">
+                <h3>🏢 Paramètres Généraux</h3>
+                <p>Configurez les informations de base de votre plateforme</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Nom de la plateforme</label>
+                <input type="text" value="StudyPlus">
+                <small>Le nom qui apparaîtra partout sur la plateforme</small>
+            </div>
+            
+            <div class="form-group">
+                <label>Description</label>
+                <textarea>Plateforme d'apprentissage en ligne pour les étudiants et professionnels</textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email de contact</label>
+                    <input type="email" value="contact@studyplus.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" value="+33 1 23 45 67 89">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Fuseau horaire</label>
+                <select>
+                    <option>Europe/Paris (UTC+1)</option>
+                    <option>Europe/London (UTC+0)</option>
+                    <option>America/New_York (UTC-5)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Langue par défaut</label>
+                <select>
+                    <option>Français</option>
+                    <option>English</option>
+                    <option>Español</option>
+                    <option>Deutsch</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Section Email -->
+        <div class="section" id="email">
+            <div class="section-header">
+                <h3>📧 Configuration Email</h3>
+                <p>Paramètres SMTP pour l'envoi des emails</p>
+            </div>
+            
+            <div class="info-box">
+                <p>💡 Configurez vos paramètres SMTP pour permettre l'envoi d'emails automatiques (notifications, réinitialisations de mots de passe, etc.)</p>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Serveur SMTP</label>
+                    <input type="text" placeholder="smtp.gmail.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Port</label>
+                    <input type="number" placeholder="587">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nom d'utilisateur</label>
+                    <input type="text" placeholder="votre-email@gmail.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" placeholder="••••••••">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Email d'expéditeur</label>
+                <input type="email" value="noreply@studyplus.com">
+                <small>L'adresse email qui apparaîtra comme expéditeur</small>
+            </div>
+            
+            <div class="toggle-switch">
+                <div class="toggle-content">
+                    <div class="toggle-title">Chiffrement TLS</div>
+                    <div class="toggle-description">Utiliser le chiffrement TLS pour les connexions SMTP</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Section Sécurité -->
+        <div class="section" id="security">
+            <div class="section-header">
+                <h3>🔒 Sécurité</h3>
+                <p>Gérez les paramètres de sécurité de votre plateforme</p>
+            </div>
+            
+            <div class="toggle-switch">
+                <div class="toggle-content">
+                    <div class="toggle-title">Authentification à deux facteurs</div>
+                    <div class="toggle-description">Activer la 2FA pour tous les administrateurs</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="toggle-switch">
+                <div class="toggle-content">
+                    <div class="toggle-title">Forcer les mots de passe complexes</div>
+                    <div class="toggle-description">Exiger des mots de passe avec majuscules, chiffres et caractères spéciaux</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label>Durée de session (minutes)</label>
+                <input type="number" value="60">
+                <small>Durée avant déconnexion automatique pour inactivité</small>
+            </div>
+            
+            <div class="form-group">
+                <label>Tentatives de connexion maximales</label>
+                <input type="number" value="5">
+                <small>Nombre de tentatives avant blocage temporaire du compte</small>
+            </div>
+        </div>
+        
+        <!-- Section Notifications -->
+        <div class="section" id="notifications">
+            <div class="section-header">
+                <h3>🔔 Notifications</h3>
+                <p>Configurez les notifications automatiques</p>
+            </div>
+            
+            <div class="toggle-switch">
+                <div class="toggle-content">
+                    <div class="toggle-title">Notifications de bienvenue</div>
+                    <div class="toggle-description">Envoyer un email de bienvenue aux nouveaux utilisateurs</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="toggle-switch">
+                <div class="toggle-content">
+                    <div class="toggle-title">Rappels de cours</div>
+                    <div class="toggle-description">Rappeler aux étudiants leurs cours en cours</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="toggle-switch">
+                <div class="toggle-content">
+                    <div class="toggle-title">Alertes administrateur</div>
+                    <div class="toggle-description">Recevoir des alertes pour les nouvelles inscriptions</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="toggle-switch">
+                <div class="toggle-content">
+                    <div class="toggle-title">Notifications de quiz</div>
+                    <div class="toggle-description">Notifier les résultats de quiz aux étudiants</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Section Sauvegarde -->
+        <div class="section" id="backup">
+            <div class="section-header">
+                <h3>💾 Sauvegarde et Maintenance</h3>
+                <p>Gérez les sauvegardes de votre plateforme</p>
+            </div>
+            
+            <div class="info-box">
+                <p>💡 Les sauvegardes automatiques permettent de restaurer votre plateforme en cas de problème</p>
+            </div>
+            
+            <div class="toggle-switch">
+                <div class="toggle-content">
+                    <div class="toggle-title">Sauvegardes automatiques</div>
+                    <div class="toggle-description">Effectuer des sauvegardes quotidiennes de la base de données</div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label>Fréquence des sauvegardes</label>
+                <select>
+                    <option>Quotidienne</option>
+                    <option>Hebdomadaire</option>
+                    <option>Mensuelle</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Conserver les sauvegardes (jours)</label>
+                <input type="number" value="30">
+                <small>Durée de conservation des fichiers de sauvegarde</small>
+            </div>
+            
+            <button class="btn btn-primary">📥 Créer une sauvegarde maintenant</button>
+            
+            <div class="danger-zone">
+                <h4>⚠️ Zone Dangereuse</h4>
+                <p>Les actions suivantes sont irréversibles. Procédez avec prudence.</p>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-warning">🗑️ Vider le cache</button>
+                    <button class="btn btn-danger">🔄 Réinitialiser la plateforme</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Save Bar -->
+        <div class="save-bar">
+            <button class="btn btn-danger">Annuler</button>
+            <button class="btn btn-success">💾 Enregistrer les modifications</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

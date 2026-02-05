@@ -1,0 +1,660 @@
+{% extends 'public/base.html.twig' %}
+
+{% block title %}SmartPath - Accueil{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* Hero Section */
+    .hero-section {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 2rem;
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    .hero-content {
+        max-width: 1200px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+    
+    .hero-text h1 {
+        font-size: 3.5rem;
+        background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        filter: drop-shadow(0 0 30px rgba(96, 165, 250, 0.5));
+        line-height: 1.2;
+    }
+    
+    body.light-mode .hero-text h1 {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 15px rgba(14, 165, 233, 0.3));
+    }
+    
+    .hero-text p {
+        font-size: 1.3rem;
+        color: #bfdbfe;
+        margin-bottom: 2.5rem;
+        line-height: 1.8;
+    }
+    
+    body.light-mode .hero-text p {
+        color: #0c4a6e;
+        font-weight: 500;
+    }
+    
+    .hero-buttons {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+        color: white;
+        box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+        animation: pulse-btn 2s infinite;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(220, 38, 38, 0.6);
+    }
+    
+    @keyframes pulse-btn {
+        0%, 100% {
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+        }
+        50% {
+            box-shadow: 0 10px 35px rgba(220, 38, 38, 0.6);
+        }
+    }
+    
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    body.light-mode .btn-secondary {
+        background: rgba(255, 255, 255, 0.8);
+        color: #0f172a;
+        border-color: rgba(3, 105, 161, 0.3);
+    }
+    
+    .btn-secondary:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .hero-visual {
+        position: relative;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    .hero-image-container {
+        position: relative;
+        width: 100%;
+        height: 450px;
+        border-radius: 30px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(37, 99, 235, 0.4);
+    }
+    
+    body.light-mode .hero-image-container {
+        box-shadow: 0 20px 60px rgba(14, 165, 233, 0.3);
+    }
+    
+    .hero-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .hero-image-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.3) 0%, rgba(59, 130, 246, 0.2) 100%);
+    }
+    
+    /* Features Section */
+    .features-section {
+        padding: 6rem 2rem;
+        animation: fadeInUp 1s ease-out;
+    }
+    
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+    
+    .section-header h2 {
+        font-size: 2.8rem;
+        background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+    
+    body.light-mode .section-header h2 {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .section-header p {
+        font-size: 1.2rem;
+        color: #bfdbfe;
+    }
+    
+    body.light-mode .section-header p {
+        color: #0c4a6e;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .feature-card {
+        background: rgba(10, 22, 40, 0.8);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 20px;
+        padding: 2.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    body.light-mode .feature-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(3, 105, 161, 0.2);
+        box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1);
+    }
+    
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(59, 130, 246, 0.3);
+        border-color: rgba(96, 165, 250, 0.5);
+    }
+    
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .feature-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        display: block;
+        animation: float-icon 2.5s ease-in-out infinite;
+    }
+    
+    @keyframes float-icon {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    
+    .feature-card h3 {
+        font-size: 1.5rem;
+        color: #93c5fd;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+    
+    body.light-mode .feature-card h3 {
+        color: #0284c7;
+    }
+    
+    .feature-card p {
+        color: #bfdbfe;
+        line-height: 1.6;
+    }
+    
+    body.light-mode .feature-card p {
+        color: #334155;
+    }
+    
+    /* Stats Banner */
+    .stats-banner {
+        background: rgba(10, 22, 40, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 30px;
+        padding: 4rem 3rem;
+        margin: 6rem 0;
+        box-shadow: 0 20px 60px rgba(37, 99, 235, 0.3);
+    }
+    
+    body.light-mode .stats-banner {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(3, 105, 161, 0.2);
+        box-shadow: 0 20px 60px rgba(14, 165, 233, 0.2);
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 3rem;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 3.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    body.light-mode .stat-number {
+        background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .stat-label {
+        font-size: 1.1rem;
+        color: #bfdbfe;
+        font-weight: 500;
+    }
+    
+    body.light-mode .stat-label {
+        color: #0c4a6e;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        padding: 6rem 2rem;
+        text-align: center;
+    }
+    
+    .cta-banner {
+        max-width: 900px;
+        margin: 0 auto;
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(96, 165, 250, 0.3);
+        border-radius: 30px;
+        padding: 4rem 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    body.light-mode .cta-banner {
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(56, 189, 248, 0.08) 100%);
+        border-color: rgba(3, 105, 161, 0.3);
+        box-shadow: 0 10px 40px rgba(14, 165, 233, 0.15);
+    }
+    
+    .cta-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -30%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(96, 165, 250, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: pulse-glow-slow 4s infinite;
+    }
+    
+    @keyframes pulse-glow-slow {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.2); opacity: 0.8; }
+    }
+    
+    .cta-banner h2 {
+        font-size: 2.5rem;
+        color: white;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    body.light-mode .cta-banner h2 {
+        color: #0f172a;
+    }
+    
+    .cta-banner p {
+        font-size: 1.2rem;
+        color: #bfdbfe;
+        margin-bottom: 2.5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    body.light-mode .cta-banner p {
+        color: #334155;
+    }
+    
+    .cta-banner .btn-primary {
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Footer */
+    .footer {
+        background: rgba(10, 22, 40, 0.95);
+        backdrop-filter: blur(15px);
+        border-top: 1px solid rgba(96, 165, 250, 0.3);
+        padding: 3rem 2rem 1.5rem;
+        margin-top: 6rem;
+    }
+    
+    body.light-mode .footer {
+        background: rgba(255, 255, 255, 0.95);
+        border-top-color: rgba(3, 105, 161, 0.3);
+    }
+    
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .footer-section h3 {
+        color: white;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+    
+    body.light-mode .footer-section h3 {
+        color: #0f172a;
+    }
+    
+    .footer-section ul {
+        list-style: none;
+    }
+    
+    .footer-section ul li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .footer-section ul li a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    body.light-mode .footer-section ul li a {
+        color: rgba(15, 23, 42, 0.7);
+    }
+    
+    .footer-section ul li a:hover {
+        color: #60a5fa;
+    }
+    
+    body.light-mode .footer-section ul li a:hover {
+        color: #0369a1;
+    }
+    
+    .footer-bottom {
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    body.light-mode .footer-bottom {
+        border-top-color: rgba(3, 105, 161, 0.1);
+        color: rgba(15, 23, 42, 0.6);
+    }
+    
+    @media (max-width: 968px) {
+        .hero-content {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+        
+        .hero-text h1 {
+            font-size: 2.5rem;
+        }
+        
+        .hero-buttons {
+            justify-content: center;
+        }
+        
+        .hero-image-container {
+            height: 350px;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>🚀 Bienvenue sur SmartPath</h1>
+            <p>
+                Découvrez une nouvelle façon d'apprendre. Accédez à des cours de qualité, 
+                testez vos connaissances et transformez votre avenir avec notre plateforme innovante.
+            </p>
+            <div class="hero-buttons">
+                <a href="{{ path('public_courses') }}" class="btn btn-primary">
+                    📚 Explorer les Cours
+                </a>
+                <a href="{{ path('public_about') }}" class="btn btn-secondary">
+                    ℹ️ En Savoir Plus
+                </a>
+            </div>
+        </div>
+        
+        <div class="hero-visual">
+            <div class="hero-image-container">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop" alt="Apprentissage">
+                <div class="hero-image-overlay"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="section-header">
+        <h2>✨ Pourquoi Choisir SmartPath ?</h2>
+        <p>Découvrez les fonctionnalités qui rendent l'apprentissage efficace et agréable</p>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card">
+            <span class="feature-icon">🎯</span>
+            <h3>Apprentissage Personnalisé</h3>
+            <p>
+                Des recommandations intelligentes adaptées à votre style d'apprentissage et à vos objectifs.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <span class="feature-icon">📚</span>
+            <h3>Bibliothèque de Cours Riche</h3>
+            <p>
+                Accédez à des centaines de cours dans divers domaines et niveaux de compétence.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <span class="feature-icon">🏆</span>
+            <h3>Quiz Interactifs</h3>
+            <p>
+                Testez vos connaissances avec des quiz engageants et obtenez des retours instantanés.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <span class="feature-icon">📊</span>
+            <h3>Suivi des Progrès</h3>
+            <p>
+                Surveillez votre parcours d'apprentissage avec des analyses et des insights détaillés.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <span class="feature-icon">🌟</span>
+            <h3>Instructeurs Experts</h3>
+            <p>
+                Apprenez auprès de professionnels de l'industrie et d'éducateurs expérimentés.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <span class="feature-icon">💼</span>
+            <h3>Croissance de Carrière</h3>
+            <p>
+                Développez des compétences qui comptent pour votre développement professionnel.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Banner -->
+<section class="stats-banner">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-number">50K+</span>
+            <p class="stat-label">Apprenants Actifs</p>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">500+</span>
+            <p class="stat-label">Cours Disponibles</p>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">95%</span>
+            <p class="stat-label">Taux de Satisfaction</p>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <p class="stat-label">Support Disponible</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-banner">
+        <h2>🎓 Prêt à Commencer ?</h2>
+        <p>
+            Rejoignez des milliers d'apprenants qui transforment déjà leur carrière avec SmartPath.
+        </p>
+        <a href="{{ path('public_courses') }}" class="btn btn-primary">
+            Commencer Maintenant
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>SmartPath</h3>
+            <p style="color: rgba(255, 255, 255, 0.7); line-height: 1.6;">
+                Donner aux apprenants du monde entier les moyens de réussir grâce à une technologie éducative de pointe et des expériences d'apprentissage personnalisées.
+            </p>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Liens Rapides</h3>
+            <ul>
+                <li><a href="{{ path('public_home') }}">Accueil</a></li>
+                <li><a href="{{ path('public_courses') }}">Cours</a></li>
+                <li><a href="{{ path('public_about') }}">À Propos</a></li>
+                <li><a href="{{ path('public_contact') }}">Contact</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Ressources</h3>
+            <ul>
+                <li><a href="#">Centre d'Aide</a></li>
+                <li><a href="#">Communauté</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">FAQ</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Légal</h3>
+            <ul>
+                <li><a href="#">Politique de Confidentialité</a></li>
+                <li><a href="#">Conditions d'Utilisation</a></li>
+                <li><a href="#">Politique des Cookies</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2026 SmartPath. Tous droits réservés.</p>
+    </div>
+</footer>
+{% endblock %}

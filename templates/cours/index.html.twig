@@ -1,0 +1,419 @@
+{% extends 'dashboard_base.html.twig' %}
+
+{% block title %}Cours - SmartPath{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .page-header {
+            background: rgba(10, 22, 40, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 8px 32px rgba(37, 99, 235, 0.3);
+            margin-bottom: 3rem;
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        body.light-mode .page-header {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(3, 105, 161, 0.3);
+            box-shadow: 0 4px 25px rgba(14, 165, 233, 0.2);
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(96, 165, 250, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .page-header h2 {
+            color: #e0f2fe;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px rgba(96, 165, 250, 0.5));
+            transition: all 0.5s ease;
+        }
+        
+        body.light-mode .page-header h2 {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 15px rgba(14, 165, 233, 0.3));
+        }
+        
+        .page-header p {
+            color: #bfdbfe;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+            transition: color 0.5s ease;
+        }
+        
+        body.light-mode .page-header p {
+            color: #0c4a6e;
+            font-weight: 500;
+        }
+        
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .course-card {
+            background: rgba(10, 22, 40, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+        
+        body.light-mode .course-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(3, 105, 161, 0.2);
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.15);
+        }
+        
+        .course-card:nth-child(1) { animation-delay: 0.1s; }
+        .course-card:nth-child(2) { animation-delay: 0.2s; }
+        .course-card:nth-child(3) { animation-delay: 0.3s; }
+        .course-card:nth-child(4) { animation-delay: 0.4s; }
+        .course-card:nth-child(5) { animation-delay: 0.5s; }
+        .course-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+        }
+        
+        body.light-mode .course-card::before {
+            background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+        }
+        
+        .course-card:hover::before {
+            opacity: 0.15;
+        }
+        
+        body.light-mode .course-card:hover::before {
+            opacity: 0.08;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.5);
+            border-color: rgba(96, 165, 250, 0.5);
+        }
+        
+        body.light-mode .course-card:hover {
+            box-shadow: 0 10px 35px rgba(14, 165, 233, 0.35);
+            border-color: rgba(3, 105, 161, 0.4);
+        }
+        
+        .course-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Animation float pour les icônes (mouvement vertical simple) */
+        @keyframes float-icon {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+        
+        .course-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+            transition: all 0.5s ease;
+            /* Animation douce et continue */
+            animation: float-icon 2.5s ease-in-out infinite;
+        }
+        
+        body.light-mode .course-icon {
+            background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+        }
+        
+        .course-card h3 {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            transition: all 0.5s ease;
+        }
+        
+        body.light-mode .course-card h3 {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .course-card p {
+            color: #bfdbfe;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            transition: color 0.5s ease;
+        }
+        
+        body.light-mode .course-card p {
+            color: #334155;
+        }
+        
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(96, 165, 250, 0.2);
+        }
+        
+        .course-level {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        body.light-mode .course-level {
+            background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
+        }
+        
+        .course-duration {
+            color: #93c5fd;
+            font-size: 0.9rem;
+            transition: color 0.5s ease;
+        }
+        
+        body.light-mode .course-duration {
+            color: #0369a1;
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(37, 99, 235, 0.2);
+            border-radius: 10px;
+            margin-top: 1rem;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+            border-radius: 10px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.8);
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .btn-enroll {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4),
+                        0 0 20px rgba(239, 68, 68, 0.3);
+            animation: pulse-btn 2s infinite;
+        }
+        
+        .btn-enroll:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 25px rgba(220, 38, 38, 0.6),
+                        0 0 30px rgba(239, 68, 68, 0.5);
+        }
+        
+        @keyframes pulse-btn {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4),
+                            0 0 20px rgba(239, 68, 68, 0.3);
+            }
+            50% {
+                box-shadow: 0 4px 20px rgba(220, 38, 38, 0.6),
+                            0 0 30px rgba(239, 68, 68, 0.5);
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h2>📚 Mes Cours</h2>
+        <p>Accédez à tous vos cours et ressources d'apprentissage</p>
+    </div>
+    
+    <div class="course-grid">
+        <div class="course-card">
+            <div class="course-icon">📐</div>
+            <h3>Mathématiques Avancées</h3>
+            <p>Découvrez les concepts avancés des mathématiques : calcul différentiel, algèbre linéaire et plus encore.</p>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 65%;"></div>
+            </div>
+            <div class="course-meta">
+                <span class="course-level">Avancé</span>
+                <span class="course-duration">⏱️ 40h</span>
+            </div>
+            <button class="btn-enroll">Continuer</button>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-icon">💻</div>
+            <h3>Programmation Web</h3>
+            <p>Apprenez à créer des sites web modernes avec HTML, CSS, JavaScript et les frameworks populaires.</p>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 45%;"></div>
+            </div>
+            <div class="course-meta">
+                <span class="course-level">Intermédiaire</span>
+                <span class="course-duration">⏱️ 35h</span>
+            </div>
+            <button class="btn-enroll">Continuer</button>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-icon">⚛️</div>
+            <h3>Physique Quantique</h3>
+            <p>Explorez les mystères de la mécanique quantique et ses applications dans le monde moderne.</p>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 20%;"></div>
+            </div>
+            <div class="course-meta">
+                <span class="course-level">Avancé</span>
+                <span class="course-duration">⏱️ 50h</span>
+            </div>
+            <button class="btn-enroll">Commencer</button>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-icon">📱</div>
+            <h3>Marketing Digital</h3>
+            <p>Maîtrisez les stratégies du marketing en ligne : SEO, réseaux sociaux, publicité digitale.</p>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 80%;"></div>
+            </div>
+            <div class="course-meta">
+                <span class="course-level">Débutant</span>
+                <span class="course-duration">⏱️ 25h</span>
+            </div>
+            <button class="btn-enroll">Continuer</button>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-icon">🤖</div>
+            <h3>Intelligence Artificielle</h3>
+            <p>Découvrez les fondamentaux de l'IA, du machine learning et du deep learning.</p>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 30%;"></div>
+            </div>
+            <div class="course-meta">
+                <span class="course-level">Avancé</span>
+                <span class="course-duration">⏱️ 60h</span>
+            </div>
+            <button class="btn-enroll">Continuer</button>
+        </div>
+        
+        <div class="course-card">
+            <div class="course-icon">🎨</div>
+            <h3>Design Graphique</h3>
+            <p>Apprenez les principes du design, la typographie, les couleurs et les outils professionnels.</p>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 55%;"></div>
+            </div>
+            <div class="course-meta">
+                <span class="course-level">Intermédiaire</span>
+                <span class="course-duration">⏱️ 30h</span>
+            </div>
+            <button class="btn-enroll">Continuer</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
