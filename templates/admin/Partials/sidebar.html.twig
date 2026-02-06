@@ -1,0 +1,41 @@
+{# Sidebar Component - Réutilisable dans tout l'espace admin #}
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+            <img src="{{ asset('images/logo.png') }}" alt="SmartPath Logo" style="height: 40px; width: auto;">
+            <h1>SmartPath</h1>
+        </div>
+        <p>Espace Administration</p>
+    </div>
+    
+    <nav class="sidebar-menu">
+        <a href="{{ path('admin_dashboard') }}" class="menu-item {{ app.request.get('_route') == 'admin_dashboard' ? 'active' : '' }}">
+            <i>📊</i> Dashboard
+        </a>
+        <a href="{{ path('admin_utilisateurs') }}" class="menu-item {{ app.request.get('_route') == 'admin_utilisateurs' ? 'active' : '' }}">
+            <i>👤</i> Utilisateurs
+        </a>
+        <a href="{{ path('admin_student_index') }}" class="menu-item {{ app.request.get('_route') starts with 'admin_student' ? 'active' : '' }}">
+            <i>🎓</i> Étudiants
+        </a>
+        <a href="{{ path('admin_cours') }}" class="menu-item {{ app.request.get('_route') == 'admin_cours' ? 'active' : '' }}">
+            <i>📚</i> Cours
+        </a>
+        <a href="{{ path('admin_quiz') }}" class="menu-item {{ app.request.get('_route') == 'admin_quiz' ? 'active' : '' }}">
+            <i>📝</i> Quiz
+        </a>
+        <a href="{{ path('admin_stages') }}" class="menu-item {{ app.request.get('_route') == 'admin_stages' ? 'active' : '' }}">
+            <i>💼</i> Stages
+        </a>
+        <a href="{{ path('admin_parametres') }}" class="menu-item {{ app.request.get('_route') == 'admin_parametres' ? 'active' : '' }}">
+            <i>⚙️</i> Paramètres
+        </a>
+        <hr>
+        <a href="{{ path('public_home') }}" class="menu-item">
+            <i>🏠</i> Retour au site
+        </a>
+        <a href="{{ path('logout') }}" class="menu-item">
+            <i>🚪</i> Déconnexion
+        </a>
+    </nav>
+</aside>

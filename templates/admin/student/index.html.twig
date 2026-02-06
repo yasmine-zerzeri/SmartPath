@@ -1,0 +1,54 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Liste des étudiants - SmartPath{% endblock %}
+
+{% block page_title %}Gestion des Étudiants{% endblock %}
+
+{% block admin_content %}
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3>Liste des Étudiants</h3>
+            <a href="{{ path('admin_student_add') }}" class="btn btn-primary">
+                ➕ Ajouter un étudiant
+            </a>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Numéro d'inscription</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                    <tr>
+                        <td>{{ student.id }}</td>
+                        <td>{{ student.nsc }}</td>
+                        <td>{{ student.email }}</td>
+                        <td>
+                            <a href="{{ path('admin_student_edit', {id: student.id}) }}" class="btn btn-warning btn-sm">
+                                ✏️ Modifier
+                            </a>
+                            <form method="post" action="{{ path('admin_student_delete', {id: student.id}) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr ?')">
+                                    🗑️ Supprimer
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center;">Aucun étudiant trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
