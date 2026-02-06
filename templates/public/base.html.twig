@@ -333,6 +333,38 @@
             color: #0284c7;
         }
         
+        /* Logout Button */
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.2rem;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(239, 68, 68, 0.5);
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.6);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+        
+        body.light-mode .logout-btn {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        
+        body.light-mode .logout-btn:hover {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
         /* Container */
         .container {
             position: relative;
@@ -462,6 +494,10 @@
         </ul>
         
         <div class="navbar-actions">
+            <a href="{{ path('logout') }}" class="logout-btn">
+                <span>🚪</span>
+                <span>Se déconnecter</span>
+            </a>
             <div class="theme-toggle" onclick="toggleTheme()">
                 <div class="theme-toggle-slider">
                     <span id="theme-icon">🌙</span>
