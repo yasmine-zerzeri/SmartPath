@@ -1,0 +1,141 @@
+{% extends 'quiz/base.html.twig' %}
+
+{% block title %}Historique{% endblock %}
+
+{% block styles %}
+<style>
+    .history-container {
+        max-width: 900px;
+        margin: 2rem auto;
+    }
+
+    .history-header {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .history-list {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .history-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .history-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .history-date {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .history-profile {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .history-recommendations {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    .recommendation-badge {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        color: var(--primary);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .history-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: 20px;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="history-container">
+        <div class="history-header">
+            <h1 style="color: var(--primary);">📚 Historique de vos Quiz</h1>
+            <p>Consultez tous vos résultats précédents</p>
+        </div>
+
+        {% if results is empty %}
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <h2>Aucun quiz passé</h2>
+            <p style="color: #6b7280; margin: 1rem 0;">Vous n'avez pas encore passé de quiz de personnalité.</p>
+            <a href="{{ path('app_quiz_index') }}" class="btn btn-primary">Passer un Quiz</a>
+        </div>
+        {% else %}
+        <div class="history-list">
+            {% for result in results %}
+            <div class="history-card">
+                <div class="history-date">
+                    📅 {{ result.createdAt|date('d/m/Y à H:i') }}
+                </div>
+                
+                <div class="history-profile">
+                    🎯 {{ result.profileType }}
+                </div>
+
+                <div class="history-recommendations">
+                    {% for recommendation in result.recommendations|slice(0, 3) %}
+                    <span class="recommendation-badge">
+                        {{ recommendation.filiere.icon ?? '🎓' }} {{ recommendation.filiere.nom }}
+                    </span>
+                    {% endfor %}
+                </div>
+
+                <div class="history-actions">
+                    <a href="{{ path('app_quiz_result', {id: result.id}) }}" class="btn btn-primary">
+                        Voir les Détails
+                    </a>
+                    <button onclick="if(confirm('Supprimer ce résultat ?')) window.location.href='/quiz/delete/{{ result.id }}'" 
+                            class="btn btn-secondary">
+                        Supprimer
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{{ path('app_quiz_index') }}" class="btn btn-secondary">← Retour</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

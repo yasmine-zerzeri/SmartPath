@@ -1,0 +1,288 @@
+{% extends 'quiz/base.html.twig' %}
+
+{% block title %}Vos Résultats{% endblock %}
+
+{% block styles %}
+<style>
+    .result-container {
+        max-width: 900px;
+        margin: 2rem auto;
+    }
+
+    .result-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 2rem;
+    }
+
+    .result-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-badge {
+        display: inline-block;
+        background: white;
+        color: var(--primary);
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 1rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .scores-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .score-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .score-label {
+        flex: 0 0 150px;
+        font-weight: 600;
+        color: var(--dark);
+        text-transform: capitalize;
+    }
+
+    .score-bar-container {
+        flex: 1;
+        height: 30px;
+        background: var(--light);
+        border-radius: 15px;
+        overflow: hidden;
+        margin: 0 1rem;
+    }
+
+    .score-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 15px;
+        transition: width 1s ease;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 10px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .score-value {
+        font-weight: 700;
+        color: var(--primary);
+        min-width: 50px;
+        text-align: right;
+    }
+
+    .recommendations-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .recommendation-card {
+        border: 2px solid var(--light);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .recommendation-card:hover {
+        border-color: var(--primary);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+    }
+
+    .filiere-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .filiere-icon {
+        font-size: 2.5rem;
+        margin-right: 1rem;
+    }
+
+    .filiere-title {
+        flex: 1;
+    }
+
+    .filiere-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+    }
+
+    .filiere-match {
+        font-size: 1rem;
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    .match-bar {
+        height: 8px;
+        background: var(--light);
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .match-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--success), var(--primary));
+        border-radius: 5px;
+    }
+
+    .filiere-details {
+        color: #6b7280;
+        line-height: 1.6;
+    }
+
+    .filiere-meta {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+
+    .actions-section {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .badge-niveau {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .badge-categorie {
+        background: #fef3c7;
+        color: #92400e;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="result-container">
+        <div class="result-header">
+            <h1>🎉 Félicitations !</h1>
+            <p style="font-size: 1.2rem;">Voici vos résultats personnalisés</p>
+            <div class="profile-badge">{{ result.profileType }}</div>
+        </div>
+
+        <!-- Scores détaillés -->
+        <div class="scores-section">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark);">📊 Vos Scores</h2>
+            {% for trait, score in result.scores %}
+            <div class="score-item">
+                <div class="score-label">{{ trait }}</div>
+                <div class="score-bar-container">
+                    <div class="score-bar" style="width: {{ score }}%">
+                        {% if score > 20 %}{{ score }}%{% endif %}
+                    </div>
+                </div>
+                <div class="score-value">{{ score }}/100</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Recommandations de filières -->
+        <div class="recommendations-section">
+            <h2 style="margin-bottom: 1.5rem; color: var(--dark);">🎯 Filières Recommandées</h2>
+            
+            {% for recommendation in result.recommendations %}
+            <div class="recommendation-card">
+                <div class="filiere-header">
+                    <div class="filiere-icon">{{ recommendation.filiere.icon ?? '🎓' }}</div>
+                    <div class="filiere-title">
+                        <div class="filiere-name">{{ recommendation.filiere.nom }}</div>
+                        <div class="filiere-match">{{ recommendation.percentage }}% de compatibilité</div>
+                    </div>
+                </div>
+
+                <div class="match-bar">
+                    <div class="match-fill" style="width: {{ recommendation.percentage }}%"></div>
+                </div>
+
+                <p class="filiere-details">{{ recommendation.filiere.description }}</p>
+
+                <div class="filiere-meta">
+                    <div class="meta-item">
+                        <span>📚</span>
+                        <strong>Niveau:</strong> {{ recommendation.filiere.niveau }}
+                    </div>
+                    <div class="meta-item">
+                        <span>🏷️</span>
+                        <strong>Catégorie:</strong> {{ recommendation.filiere.categorie }}
+                    </div>
+                </div>
+
+                {% if recommendation.filiere.debouches %}
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--light);">
+                    <strong style="color: var(--dark);">💼 Débouchés:</strong>
+                    <p style="color: #6b7280; margin-top: 0.5rem;">{{ recommendation.filiere.debouches }}</p>
+                </div>
+                {% endif %}
+
+                {% if recommendation.filiere.competences %}
+                <div style="margin-top: 1rem;">
+                    <strong style="color: var(--dark);">🛠️ Compétences:</strong>
+                    <p style="color: #6b7280; margin-top: 0.5rem;">{{ recommendation.filiere.competences }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-section">
+            <a href="{{ path('app_quiz_index') }}" class="btn btn-primary">Refaire le Quiz</a>
+            <button onclick="window.print()" class="btn btn-secondary">Imprimer les Résultats</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animation des barres de score au chargement
+    window.addEventListener('load', () => {
+        document.querySelectorAll('.score-bar').forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 100);
+        });
+    });
+</script>
+{% endblock %}
